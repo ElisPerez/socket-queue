@@ -1,0 +1,22 @@
+{
+  "name": "socket-queue",
+  "version": "1.0.0",
+  "description": "App to take turns in business",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Elis Antonio Perez",
+    "email": "elisperezmusic@gmail.com",
+    "url": "https://www.instagram.com/elisperezmusic"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "socket.io": "^3.1.1"
+  }
+}
