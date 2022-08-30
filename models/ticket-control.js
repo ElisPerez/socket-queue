@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 class TicketControl {
   constructor() {
     this.ultimo = 0;
@@ -5,7 +8,7 @@ class TicketControl {
     this.tickets = [];
     this.ultimos4 = [];
 
-    this.init;
+    this.init();
   }
 
   get toJson() {
@@ -18,11 +21,21 @@ class TicketControl {
   }
 
   init() {
-    const data = require('../db/data.json');
-    console.log(data);
+    const { hoy, tickets, ultimo, ultimos4 } = require('../db/data.json');
+    if (hoy === this.hoy ) {
+      this.tickets = tickets;
+      this.ultimo = ultimo;
+      this.ultimos4 = ultimos4;
+    } else {
+      // Es otro día.
+      this.guardarDB()
+    }
   }
 
   guardarDB() {
-
+    const dbPath = path.join(__dirname, '../db/data.json');
+    fs.writeFileSync(dbPath, JSON.stringify(this.toJson))
   }
 }
+
+module.exports = TicketControl;
