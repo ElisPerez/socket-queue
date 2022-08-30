@@ -1,6 +1,13 @@
 const path = require('path');
 const fs = require('fs');
 
+class Ticket {
+  constructor(numero, escritorio) {
+    this.numero = numero;
+    this.escritorio = escritorio;
+  }
+}
+
 class TicketControl {
   constructor() {
     this.ultimo = 0;
@@ -22,19 +29,51 @@ class TicketControl {
 
   init() {
     const { hoy, tickets, ultimo, ultimos4 } = require('../db/data.json');
-    if (hoy === this.hoy ) {
+    if (hoy === this.hoy) {
       this.tickets = tickets;
       this.ultimo = ultimo;
       this.ultimos4 = ultimos4;
     } else {
       // Es otro día.
-      this.guardarDB()
+      this.guardarDB();
     }
   }
 
   guardarDB() {
     const dbPath = path.join(__dirname, '../db/data.json');
-    fs.writeFileSync(dbPath, JSON.stringify(this.toJson))
+    fs.writeFileSync(dbPath, JSON.stringify(this.toJson));
+  }
+
+  siguiente() {
+    this.ultimo += 1;
+    const ticket = new Ticket(this.ultimo, null);
+    this.tickets.push(ticket);
+
+    this.guardarDB();
+
+    return 'Ticket ' + ticket.numero;
+  }
+
+  atenderTicket(escritorio) {
+    // No tenemos tickets
+    if (this.tickets.length === 0) {
+      return null;
+    }
+
+    // shift(): Selecciona la primera posición del arreglo.
+    const ticket = this.tickets.shift(); // this.tickets[0];
+    ticket.escritorio = escritorio;
+
+    // unshift(): Agrega al arreglo antes de la primera posición.
+    this.ultimos4.unshift(ticket);
+
+    if (this.ultimos4.length > 4) {
+      this.ultimos4.splice(-1, 1);
+    }
+    // console.log(this.ultimos4);
+    this.guardarDB();
+
+    return ticket;
   }
 }
 
