@@ -2,76 +2,76 @@ const path = require('path');
 const fs = require('fs');
 
 class Ticket {
-  constructor(numero, escritorio) {
-    this.numero = numero;
-    this.escritorio = escritorio;
+  constructor(number, desk) {
+    this.number = number;
+    this.desk = desk;
   }
 }
 
 class TicketControl {
   constructor() {
-    this.ultimo = 0;
-    this.hoy = new Date().getDate();
+    this.last = 0;
+    this.today = new Date().getDate();
     this.tickets = [];
-    this.ultimos4 = [];
+    this.last4 = [];
 
     this.init();
   }
 
   get toJson() {
     return {
-      ultimo: this.ultimo,
-      hoy: this.hoy,
+      last: this.last,
+      today: this.today,
       tickets: this.tickets,
-      ultimos4: this.ultimos4,
+      last4: this.last4,
     };
   }
 
   init() {
-    const { hoy, tickets, ultimo, ultimos4 } = require('../db/data.json');
-    if (hoy === this.hoy) {
+    const { today, tickets, last, last4 } = require('../db/data.json');
+    if (today === this.today) {
       this.tickets = tickets;
-      this.ultimo = ultimo;
-      this.ultimos4 = ultimos4;
+      this.last = last;
+      this.last4 = last4;
     } else {
-      // Es otro día.
-      this.guardarDB();
+      // It's another day.
+      this.saveDB();
     }
   }
 
-  guardarDB() {
+  saveDB() {
     const dbPath = path.join(__dirname, '../db/data.json');
     fs.writeFileSync(dbPath, JSON.stringify(this.toJson));
   }
 
-  siguiente() {
-    this.ultimo += 1;
-    const ticket = new Ticket(this.ultimo, null);
+  next() {
+    this.last += 1;
+    const ticket = new Ticket(this.last, null);
     this.tickets.push(ticket);
 
-    this.guardarDB();
+    this.saveDB();
 
-    return 'Ticket ' + ticket.numero;
+    return 'Ticket ' + ticket.number;
   }
 
-  atenderTicket(escritorio) {
-    // No tenemos tickets
+  serveTicket(desk) {
+    // We don't have tickets
     if (this.tickets.length === 0) {
       return null;
     }
 
-    // shift(): Selecciona la primera posición del arreglo.
+    // shift(): Select the first position of the array.
     const ticket = this.tickets.shift(); // this.tickets[0];
-    ticket.escritorio = escritorio;
+    ticket.desk = desk;
 
-    // unshift(): Agrega al arreglo antes de la primera posición.
-    this.ultimos4.unshift(ticket);
+    // unshift(): Add to the array before the first position.
+    this.last4.unshift(ticket);
 
-    if (this.ultimos4.length > 4) {
-      this.ultimos4.splice(-1, 1);
+    if (this.last4.length > 4) {
+      this.last4.splice(-1, 1);
     }
-    // console.log(this.ultimos4);
-    this.guardarDB();
+    // console.log(this.last4);
+    this.saveDB();
 
     return ticket;
   }

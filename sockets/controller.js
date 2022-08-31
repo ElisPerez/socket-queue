@@ -3,35 +3,35 @@ const TicketControl = require('../models/ticket-control');
 const ticketControl = new TicketControl();
 
 const socketController = socket => {
-  // Eventos que se disparan cuando un cliente se conecta
-  socket.emit('ultimo-ticket', ticketControl.ultimo);
-  socket.emit('estado-actual', ticketControl.ultimos4);
-  socket.emit('tickets-pendientes', ticketControl.tickets.length);
+  // Events that are fired when a client connects
+  socket.emit('last-ticket', ticketControl.last);
+  socket.emit('current-state', ticketControl.last4);
+  socket.emit('tickets-pending', ticketControl.tickets.length);
 
-  socket.on('siguiente-ticket', (payload, callback) => {
-    const siguiente = ticketControl.siguiente();
-    callback(siguiente);
-    socket.broadcast.emit('tickets-pendientes', ticketControl.tickets.length);
+  socket.on('next-ticket', (payload, callback) => {
+    const next = ticketControl.next();
+    callback(next);
+    socket.broadcast.emit('tickets-pending', ticketControl.tickets.length);
   });
 
-  socket.on('atender-ticket', ({ escritorio }, callback) => {
-    if (!escritorio) {
+  socket.on('serve-ticket', ({ desk }, callback) => {
+    if (!desk) {
       return callback({
         ok: false,
-        msg: 'El escritorio es obligatorio',
+        msg: 'The desk is required',
       });
     }
 
-    const ticket = ticketControl.atenderTicket(escritorio);
+    const ticket = ticketControl.serveTicket(desk);
 
-    socket.broadcast.emit('estado-actual', ticketControl.ultimos4);
-    socket.emit('tickets-pendientes', ticketControl.tickets.length);
-    socket.broadcast.emit('tickets-pendientes', ticketControl.tickets.length);
+    socket.broadcast.emit('current-state', ticketControl.last4);
+    socket.emit('tickets-pending', ticketControl.tickets.length);
+    socket.broadcast.emit('tickets-pending', ticketControl.tickets.length);
 
     if (!ticket) {
       callback({
         ok: false,
-        msg: 'Ya no hay tickets pendientes',
+        msg: 'There are no pending tickets',
       });
     } else {
       callback({
