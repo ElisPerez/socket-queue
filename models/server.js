@@ -12,14 +12,14 @@ class Server {
 
     this.paths = {};
 
+    // Sockets
+    this.sockets();
+
     // Middlewares
     this.middlewares();
 
     // Routes of my application
     this.routes();
-
-    // Sockets
-    this.sockets();
   }
 
   middlewares() {
