@@ -9,6 +9,7 @@ const lblTicket4 = document.querySelector('#lblTicket4');
 const lblDesk4 = document.querySelector('#lblDesk4');
 
 const socket = io();
+socket.connect( 'https://socket-queue.vercel.app/' );
 
 socket.on('current-state', payload => {
   const audio = new Audio('../audio/new-ticket.mp3');

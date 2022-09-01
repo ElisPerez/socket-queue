@@ -19,6 +19,7 @@ lblDesk.innerText = desk;
 divAlert.style.display = 'none';
 
 const socket = io();
+socket.connect( 'https://socket-queue.vercel.app/' );
 
 socket.on('connect', () => {
   btnServe.disabled = false;
