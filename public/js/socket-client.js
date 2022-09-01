@@ -5,7 +5,7 @@ const txtMessage = document.querySelector('#txtMessage');
 const btnSend = document.querySelector('#btnSend');
 
 const socket = io();
-socket.connect( 'https://socket-queue.vercel.app/' );
+socket.connect( `https://socket-queue.vercel.app:${process.env.PORT}/` );
 
 socket.on('connect', () => {
   // console.log('Connected');
